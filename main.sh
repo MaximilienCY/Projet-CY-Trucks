@@ -2,7 +2,7 @@
 
 #######################################################################
 #
-# Description : 
+# Description : Projet démarré le 24 Décembre
 #
 # Auteur      : Maximilien HAMPE et Timothée FRANCOIS
 #
