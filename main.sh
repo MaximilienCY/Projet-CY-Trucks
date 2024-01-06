@@ -23,18 +23,19 @@ Options :
 "
 
 
-#si le premier paramètre est bien un fichier
-if [ ! -f $1 ];then
+
+if [ ! -f $1 ];then #si le premier paramètre est bien un fichier
 	echo "ERREUR : Le fichier spécifié n'existe pas ou n'en est pas un"
 	exit 1
-fi
 	
-#si le premier paramètre est un bien un fichier CSV	
-if [ "$1" != *".csv" ];then
+elif [ "$1" != *".csv" ];then #si le premier paramètre est un bien un fichier CSV	
 	echo "ERREUR : le fichier spécifié doit être un fichier CSV "
 	exit 1
 	
 fi
+
+	
+
 
 #stockage des données dans une variable data
 data=$1
@@ -50,8 +51,15 @@ fi
 
 #verification executable C
 
-#verification de la présence du dossier temp et images 
 
+
+if [ ! -d "images" ];then #verifiction de la présence du répertoire images
+	mkdir "images" 
+fi
+
+if [ ! -d "temp" ];then #verifiction de la présence du répertoire temp
+	mkdir "temp"
+fi
 
 
 
