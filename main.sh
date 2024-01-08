@@ -49,7 +49,7 @@ if [ "$1" == "" ];then
 fi
 
 
-#verification executable C
+
 
 #copie le fichier .csv dans le dossier data. ### VERIFICATION ###
 if [ ! -d "data" ];then
@@ -79,7 +79,26 @@ verification_parametre() {
 }
 
 #fonction lancement des traitements
+traitement(){
+	case "$1" in 
+	'-d1')  
+		start=$(date +%s)
+		#Extraction des prénoms et comptage des occurrences
+		cut -d ',' -f $NOM_COLONNE data.csv | sort | uniq -c | sort -rn > counts.txt
+		#Affichage des 10 prénoms les plus fréquents
+		echo "Les 10 prénoms les plus fréquents :"
+		head -n 10 counts.txt
 
+		end=$(date +%s)
+		echo "Temps d'exécution : $((end-start)) secondes"
+		return 1;;
+	'-d2') ;;
+	'-l') ;;
+	'-t') ;;
+	'-s') ;;
+	*) return 0;;
+	esac
+}
 #Parcours tout les paramètres 
 for par in $*;do
 	if [ $par == "-h" ];then
@@ -91,8 +110,32 @@ for par in $*;do
 		echo "ERREUR : un des paramètres n'existe pas"
 		exit 1
 	fi
+	#verification executable C
+	executable="./m"
 	
+	#fonction traitement 
+	traitement "$par"
 done
 
-awk -F ',' '{print $6}' data.csv | sort | uniq -c | sort -rn > counts.txt
-head -n 10 counts.txt > top_10_counts.txt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
