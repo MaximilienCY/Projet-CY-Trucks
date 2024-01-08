@@ -51,7 +51,13 @@ fi
 
 #verification executable C
 
-
+#copie le fichier .csv dans le dossier data. ### VERIFICATION ###
+if [ ! -d "data" ];then
+	mkdir "data"
+	cp $data data
+else
+	cp $data data	
+fi
 
 if [ ! -d "images" ];then #verifiction de la présence du répertoire images
 	mkdir "images" 
