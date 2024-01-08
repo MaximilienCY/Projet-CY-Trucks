@@ -88,7 +88,7 @@ for par in $*;do
 	
 done
 
-awk -F',' '{count[$1]++} END {for (c in count) print c "," count[c]}' fichier.csv \
+awk -F',' '{count[$1]++} END {for (c in count) print c "," count[c]}' data.csv \
     | sort -t',' -k2,2nr \
     | head -n 10 \
     > top_10_conducteurs.csv
