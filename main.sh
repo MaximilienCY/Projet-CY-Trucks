@@ -100,7 +100,7 @@ traitement(){
 		} 
 		END { 
 			for (conducteur in distances) print conducteur, distances[conducteur] 
-		}'  data.csv > temp/d2temp.text
+		}'  data.csv > temp/d2temp.txt
 		sort -n -r -t";" -k2 temp/d2temp.txt | head -n 10 > d2.txt 
 		end=$(date +%s)
 		echo "Temps d'exécution : $((end-start)) secondes"
