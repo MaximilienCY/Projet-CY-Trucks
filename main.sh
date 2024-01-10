@@ -92,7 +92,20 @@ traitement(){
 		end=$(date +%s)
 		echo "Temps d'exécution : $((end-start)) secondes"
 		return 1;;
-	'-d2') ;;
+	'-d2') 
+		start=$(date +%s)
+		awk -F, '
+		{ 
+			distances[$6] += $5
+		} 
+		END { 
+			for (conducteur in distances) print conducteur, distances[conducteur] 
+		}'  data.csv > temp/tempd2.text
+		sort -n -r -t";" -k2 temp/d2temp.txt | head -n 10 > d2.txt 
+		end=$(date +%s)
+		echo "Temps d'exécution : $((end-start)) secondes"
+		return 1;;
+		
 	'-l') ;;
 	'-t') ;;
 	'-s') ;;
