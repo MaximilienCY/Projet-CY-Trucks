@@ -83,12 +83,15 @@ traitement(){
 	case "$1" in 
 	'-d1')  
 		start=$(date +%s)
-		#Extraction des prénoms et comptage des occurrences
-		cut -d ',' -f $NOM_COLONNE data.csv | sort | uniq -c | sort -rn > counts.txt
-		#Affichage des 10 prénoms les plus fréquents
-		echo "Les 10 prénoms les plus fréquents :"
-		head -n 10 counts.txt
-
+		awk -F';' '
+		{ 
+			conducteurs[$6]++
+		} 
+		END { 
+			for (conducteur in conducteurs) print conducteur, conducteurs[conducteur] 
+		}'  data.csv > temp/d1temp.csv
+		sort -t ' ' -k3,3nr temp/d1temp.csv > d1.csv
+		head -n 10 d1.csv
 		end=$(date +%s)
 		echo "Temps d'exécution : $((end-start)) secondes"
 		return 1;;
