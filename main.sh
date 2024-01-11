@@ -97,18 +97,30 @@ traitement(){
 		return 1;;
 	'-d2') 
 		start=$(date +%s)
+
 		LC_NUMERIC=C awk -F';' 'BEGIN { OFS=";" } { gsub(",", "", $5); distances[$6] += $5 
 		} 
 		END { 
-			for (conducteur in distances) printf "%s %.3f\n", conducteur, distances[conducteur] 
+    		for (conducteur in distances) printf "%s %.3f\n", conducteur, distances[conducteur] 
 		}' data.csv > temp/d2temp.csv
-		LC_NUMERIC=C sort -t" " -k3,3nr temp/d2temp.csv > d2.csv
-		head -n 10 d2.csv
+
+		LC_NUMERIC=C sort -t ' ' -k3,3nr temp/d2temp.csv | head -n 10 > d2.csv
 		end=$(date +%s)
 		echo "Temps d'exécution : $((end-start)) secondes"
 		return 1;;
+		
+	'-l')
+		start=$(date +%s)
+		LC_NUMERIC=C awk -F';' 'BEGIN { OFS=";" } { gsub(",", "", $5); distances[$1] += $5 
+		} 
+		END { 
+    			for (conducteur in distances) printf "%s %.3f\n", conducteur, distances[conducteur] 
+		}' data.csv > temp/ltemp.csv 
+		LC_NUMERIC=C sort -t ' ' -k2,2nr temp/ltemp.csv | head -n 10 | sort -n -t ' ' -k1 > l.csv
 
-	'-l') ;;
+		end=$(date +%s)	
+		echo "Temps d'exécution : $((end-start)) secondes"
+		return 1;
 	'-t') ;;
 	'-s') ;;
 	*) return 0;;
