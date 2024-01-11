@@ -5,7 +5,6 @@
 #define TAILLE_VILLE 35
 #define MAX_VILLES 10
 
-
 // Structure pour stocker les informations sur une ville
 typedef struct ApparitionVILLE {
     char nom[TAILLE_VILLE];
@@ -14,7 +13,6 @@ typedef struct ApparitionVILLE {
     struct ApparitionVILLE *droite;
     int hauteur;
 } ApparitionVILLE;
-
 
 // Fonction utilitaire pour retourner le maximum entre deux entiers
 int max(int a, int b) {
@@ -86,24 +84,24 @@ ApparitionVILLE *insererVille(ApparitionVILLE *noeud, char *nom) {
         (noeud->totalVisites)++;
         return noeud;
     }
-	
-    // Mettre à jour la hauteur du nœud
-    noeud->hauteur = 1 + max(hauteur(noeud->gauche), hauteur(noeud-		>droite));
-    // Vérifier l'équilibre du nœud et effectuer des rotations si nécessaire
-    int equilibre = calculEQUILIBRE(noeud);
 
-    if (equilibre > 1 && strcmp(nom, noeud->gauche->nom) < 0)
+    // Mettre à jour la hauteur du nœud
+    noeud->hauteur = 1 + max(hauteur(noeud->gauche), hauteur(noeud->droite));
+    // Vérifier l'équilibre du nœud et effectuer des rotations si nécessaire
+    int balance = calculEQUILIBRE(noeud);
+
+    if (balance > 1 && strcmp(nom, noeud->gauche->nom) < 0)
         return rotationDroite(noeud);
 
-    if (equilibre < -1 && strcmp(nom, noeud->droite->nom) > 0)
+    if (balance < -1 && strcmp(nom, noeud->droite->nom) > 0)
         return rotationGauche(noeud);
 
-    if (equilibre > 1 && strcmp(nom, noeud->gauche->nom) > 0) {
+    if (balance > 1 && strcmp(nom, noeud->gauche->nom) > 0) {
         noeud->gauche = rotationGauche(noeud->gauche);
         return rotationDroite(noeud);
     }
 
-    if (equilibre < -1 && strcmp(nom, noeud->droite->nom) < 0) {
+    if (balance < -1 && strcmp(nom, noeud->droite->nom) < 0) {
         noeud->droite = rotationDroite(noeud->droite);
         return rotationGauche(noeud);
     }
@@ -200,4 +198,3 @@ int main() {
 
     return EXIT_SUCCESS;
 }
-
