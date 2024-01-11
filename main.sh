@@ -97,18 +97,17 @@ traitement(){
 		return 1;;
 	'-d2') 
 		start=$(date +%s)
-		awk -F';' '
-		{ 
-			distances[$6] += $5
+		LC_NUMERIC=C awk -F';' 'BEGIN { OFS=";" } { gsub(",", "", $5); distances[$6] += $5 
 		} 
 		END { 
-			for (conducteur in distances) print conducteur, distances[conducteur] 
-		}'  data.csv > temp/d2temp.txt
-		sort -n -r -t";" -k2 temp/d2temp.txt | head -n 10 > d2.txt 
+			for (conducteur in distances) printf "%s %.3f\n", conducteur, distances[conducteur] 
+		}' data.csv > temp/d2temp.csv
+		LC_NUMERIC=C sort -t" " -k3,3nr temp/d2temp.csv > d2.csv
+		head -n 10 d2.csv
 		end=$(date +%s)
 		echo "Temps d'exécution : $((end-start)) secondes"
 		return 1;;
-		
+
 	'-l') ;;
 	'-t') ;;
 	'-s') ;;
