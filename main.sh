@@ -118,6 +118,22 @@ traitement(){
 		}' data.csv > temp/ltemp.csv 
 		LC_NUMERIC=C sort -t ' ' -k2,2nr temp/ltemp.csv | head -n 10 | sort -n -t ' ' -k1 > l.csv
 
+		output_folder="images"  # Spécifiez le dossier de sortie
+		output_file="${output_folder}/Traitement -l.png"
+		
+		gnuplot -persist <<- EOF
+		set terminal pngcairo enhanced font "arial,12" size 800,600
+		set output '$output_file'
+		set title 'Les 10 trajets les plus longs'
+		set style data histograms
+		set style fill solid border -1
+		set ylabel 'Distance (km)'
+		set xlabel 'Identifiant du trajet'
+		set xtics rotate by -45
+		set datafile separator " "
+		plot 'l.csv' using 2:xtic(1) title ''
+		EOF
+
 		end=$(date +%s)	
 		echo "Temps d'exécution : $((end-start)) secondes"
 		return 1;;
