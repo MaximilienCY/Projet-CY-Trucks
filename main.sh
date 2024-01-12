@@ -120,7 +120,7 @@ traitement(){
 
 		end=$(date +%s)	
 		echo "Temps d'exécution : $((end-start)) secondes"
-		return 1;
+		return 1;;
 	'-t') ;;
 	'-s') ;;
 	*) return 0;;
