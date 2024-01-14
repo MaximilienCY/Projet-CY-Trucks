@@ -85,13 +85,34 @@ traitement(){
 		start=$(date +%s)
 		awk -F';' '
 		{ 
-			conducteurs[$6]++
+			trajet = $1 ";" $6
+			if (!existence[trajet]++) {
+				conducteurs[$6]++
+			}	
 		} 
 		END { 
-			for (conducteur in conducteurs) print conducteur, conducteurs[conducteur] 
-		}'  data.csv > temp/d1temp.csv
-		sort -t ' ' -k3,3nr temp/d1temp.csv > d1.csv
-		head -n 10 d1.csv
+			for (conducteur in conducteurs) {
+				print conducteur";"conducteurs[conducteur]
+			}
+		}'  data.csv | sort -t';' -k2,2nr | head -n 10 > temp/d2.txt
+  		gnuplot -persist <<- EOF 
+		set terminal pngcairo enhanced font "arial,12" size 800,600
+		set output 'images/d1.png'
+		set title 'TITRE'
+		set style data histograms
+		set style histogram rowstacked
+		set style fill solid border -1
+		set xlabel 'Nombres de route'
+		set ylabel 'Noms des conducteurs'
+		set ytics rotate by -45
+		set xtics nomirror
+    		set ytics nomirror
+    		set border 3
+    		set boxwidth 0.5 relative
+    		set datafile separator ";"
+    		plot 'temp/d2.txt' using 2:xtic(1) title ''
+		EOF
+  
 		end=$(date +%s)
 		echo "Temps d'exécution : $((end-start)) secondes"
 		return 1;;
