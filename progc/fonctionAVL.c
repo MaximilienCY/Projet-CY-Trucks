@@ -204,3 +204,14 @@ Trajet* insertionAVL(Trajet* a, int e, int* h) {
 }
 
 
+//FONCTION RECHERCHE
+Trajet* recherche(Trajet* a, int e) {
+    if (a != NULL){
+    	if (a->trajet == e){
+    		return a;
+    	}
+    }
+    recherche(a->left, e);
+    recherche(a->right, e);
+}
+
