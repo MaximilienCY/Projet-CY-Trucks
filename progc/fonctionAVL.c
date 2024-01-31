@@ -4,16 +4,17 @@
 #include "avl.h"
 
 
+
 //Fonction OBTENIR LA HAUTEUR d'un noead
-int height(Arbre* N){
-	if(N==NULL){
+int height(Trajet* N){
+	if(N == NULL){
 		return 0;
 	}
 	return N->hauteur;
 }
 
 //FONCTION OBTENIR LE FACTEUR d'equilibrage
-int getBalance(Arbre* N) {
+int getBalance(Trajet* N) {
     	if (N == NULL) return 0;
     	return height(N->droit) - height(N->gauche);
 }
@@ -85,22 +86,7 @@ Trajet* equilibrerAVL(Trajet *a) {
     	return a;
 }
 
-//FONCTION RECHERCHE
-Trajet* recherche(Trajet* a, int e) {
-    if (a == NULL) {
-        // L'élément n'est pas trouvé
-        return NULL;
-    } else if (a->trajet == e) {
-        // L'élément est trouvé
-        return a;
-    } else if (e < a->trajet) {
-        // Chercher dans le sous-arbre gauche
-        return recherche(a->gauche, e);
-    } else {
-        // Chercher dans le sous-arbre droit
-        return recherche(a->droit, e);
-    }
-}
+
 
 void modificationNoeud(Trajet* trajet, int km){
 	if(km > trajet->distance_maxi){
@@ -126,92 +112,182 @@ void afficherAVL(Trajet* root) {
 
 
 //FONCTION SuppressionAVL
-Arbre* suppressionAVL(Arbre* a, int e, int* h) {
-    Node* tmp;
-    if (a == NULL) {
-        *h = 1;
-        return a;
-    }
-
-    if (e > a->value) {
-        a->right = suppressionAVL(a->right, e, h);
-    } else if (e < a->value) {
-        a->left = suppressionAVL(a->left, e, h);
-        *h = -*h;
-    } else {
-        if (a->right != NULL) {
-            a->right = suppMinAVL(a->right, h, &(a->value));
-        } else {
-            tmp = a;
-            a = a->left;
-            free(tmp);
-            *h = -1;
-        }
-    }
-
-    if (*h != 0) {
-        a->height = 1 + max(height(a->left), height(a->right));
-        a = equilibrerAVL(a);
-        *h = (getBalance(a) == 0) ? 0 : 1;
-    }
-    return a;
+Trajet* suppressionAVL(Trajet* a, float e, int* h) {
+    	Trajet* tmp;
+    	if (a == NULL) {
+        	*h = 1;
+        	return a;
+    	}
+    	if (e > a->valeur) {
+    		
+        	a->droit = suppressionAVL(a->droit, e, h);
+    	} else if (e < a->valeur) {
+    		
+        	a->gauche = suppressionAVL(a->gauche, e, h);
+        	*h = -*h;
+    	} else {
+    		
+        	if (a->droit != NULL) {
+            		a->droit = suppMinAVL(a->droit, h, &(a->valeur));
+        	} else {
+        		
+            		tmp = a;
+            		a = a->gauche;
+            		free(tmp);
+            		*h = -1;
+      
+        	}
+    	}
+	
+    	if (*h != 0 && a != NULL) {
+    		
+        	a->hauteur = 1 + max(height(a->gauche), height(a->droit));
+        	
+        	a = equilibrerAVL(a);
+        	*h = (getBalance(a) == 0) ? 0 : 1;
+    	}
+    	
+    	return a;
 }
 
 //FONCTION suppMinAVL
-Node* suppMinAVL(Node* a, int* h, int* pe) {
-    Node* tmp;
-    if (a->left == NULL) {
-        *pe = a->value;
-        *h = -1;
-        tmp = a;
-        a = a->right;
-        free(tmp);
-        return a;
-    } else {
-        a->left = suppMinAVL(a->left, h, pe);
-        *h = -*h;
-    }
+Trajet* suppMinAVL(Trajet* a, int* h, float* pe) {
+    	Trajet* tmp;
+    	if (a->gauche == NULL) {
+    		
+        	*pe = a->valeur;
+        	*h = -1;
+        	tmp = a;
+        	a = a->droit;
+        	free(tmp);
+        	return a;
+    	} else {
+        	a->gauche = suppMinAVL(a->gauche, h, pe);
+        	*h = -*h;
+    	}
 
-    if (*h != 0) {
-        a->height = 1 + max(height(a->left), height(a->right));
-        a = equilibrerAVL(a);
-        *h = (getBalance(a) == 0) ? -1 : 0;
-    }
-    return a;
+    	if (*h != 0) {
+    		
+        	a->hauteur = 1 + max(height(a->gauche), height(a->droit));
+        	a = equilibrerAVL(a);
+        	*h = (getBalance(a) == 0) ? -1 : 0;
+    	}
+    	return a;
 }
 
 
-//FONCTION d'insertion dans l'arbre AVL
-Trajet* insertionAVL(Trajet* a, int e, int* h) {
-    if (e < a->value) {
-        a->left = insertionAVL(a->gauche, e, h);
-        *h = -*h;
-    } else if (e > a->value) {
-        a->right = insertionAVL(a->droit, e, h);
-    } else {
-        *h = 0;
-        return a;
-    }
+Trajet* insertionAVL(Trajet* a, Trajet* noeud, int* h) {
+    	if (a == NULL) {	
+      	   	*h = 1; // Arbre a grandi en hauteur
+        	return noeud;
+    	}
+	
+    	if (noeud->valeur < a->valeur) {
+    		printf("b"); 		
+        	a->gauche = insertionAVL(a->gauche, noeud, h);
+    	} else if (noeud->valeur > a->valeur) {
+    		printf("a"); 	
+        	a->droit = insertionAVL(a->droit, noeud, h);
+    	} else {
+    		printf("c"); 
+        	*h = 0; // Valeur déjà présente, pas d'insertion
+        	return a;
+    	}
 
-    a->height = 1 + max(height(a->left), height(a->right));
+    	a->hauteur = 1 + max(height(a->gauche), height(a->droit));
 
-    if (*h != 0) {
-        a = equilibrageAVL(a);
-        *h = (getBalance(a) == 0) ? 0 : 1;
-    }
-
-    return a;
+    	if (*h != 0) {
+        	a = equilibrerAVL(a);
+        	*h = (getBalance(a) == 0) ? 0 : 1;
+    	}
+    	return a;
 }
-
 
 //FONCTION RECHERCHE
 Trajet* recherche(Trajet* a, int e) {
-    if (a != NULL){
-    	if (a->trajet == e){
-    		return a;
+
+    	if (a == NULL) {
+    		
+     	   	return NULL; // Cas de base : nœud est NULL
     	}
-    }
-    recherche(a->left, e);
-    recherche(a->right, e);
+
+    	if (a->trajet == e) {
+    	    	return a; // Nœud trouvé
+    	}
+
+    	// D'abord, recherche dans le sous-arbre gauche
+    	Trajet* resultGauche = recherche(a->gauche, e);
+    	if (resultGauche != NULL) {
+    	    	return resultGauche; // Nœud trouvé dans le sous-arbre gauche
+   	 }
+
+    	// Ensuite, recherche dans le sous-arbre droit
+    	return recherche(a->droit, e);
 }
+
+
+
+
+Trajet* creerNoeud(int trajet_id,float kilometrage) {
+    	Trajet* nouveau = (Trajet*)malloc(sizeof(Trajet)); // Allocation de mémoire
+	
+    	if (nouveau != NULL) { // Vérifier si l'allocation a réussi
+    		nouveau->trajet = trajet_id; // Initialiser trajet (ou avec une autre valeur appropriée)
+        	nouveau->distance_maxi = kilometrage; // Utiliser la valeur de kilométrage fournie
+        	nouveau->distance_mini = kilometrage; // Initialiser à zéro ou une autre valeur appropriée
+        	nouveau->nombre_etape = 1; // Initialiser à zéro ou une autre valeur appropriée
+        	nouveau->moyenne = kilometrage; // Initialiser à zéro ou une autre valeur appropriée
+        	nouveau->valeur = 0; // Initialiser à zéro ou une autre valeur appropriée
+        	nouveau->droit = NULL; // Aucun enfant droit au début
+        	nouveau->gauche = NULL; // Aucun enfant gauche au début
+        	nouveau->hauteur = 1; // Hauteur initiale pour un nœud feuille
+    	}
+
+    	return nouveau; // Retourner le nouveau nœud
+}
+
+
+int max(int a, int b) {
+    	if (a > b) {
+        	return a;
+    	} else {
+        	return b;
+    	}
+}
+
+int min(int a, int b) {
+    	if (a < b) {
+        	return a;
+    	} else {
+        	return b;
+    	}
+}
+
+
+
+void parcoursOrdreInverseLimite(Trajet* racine, int* compteur) {
+    	if (racine == NULL || *compteur >= 50) {	
+        	return; // Arrêter si l'arbre est vide ou si 50 nœuds ont été visités
+    	}
+
+    	// Parcourir d'abord le sous-arbre droit
+    	parcoursOrdreInverseLimite(racine->droit, compteur);
+
+    	if (*compteur < 50) {
+
+        	// Afficher la valeur du nœud actuel
+        	printf("%d ", racine->trajet); // ou toute autre valeur que vous voulez afficher
+        	(*compteur)++; // Incrémenter le compteur
+    	}
+
+    	// Parcourir ensuite le sous-arbre gauche
+    	parcoursOrdreInverseLimite(racine->gauche, compteur);
+}
+
+// Fonction pour initier le parcours
+void afficherTop50(Trajet* racine) {
+    	int compteur = 0;
+    	parcoursOrdreInverseLimite(racine, &compteur);
+}
+
 
