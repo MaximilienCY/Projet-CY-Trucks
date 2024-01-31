@@ -2,24 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include "avl.h"
-typedef struct Trajet{
-	int trajet;
-	float distance_maxi;
-	float distance_mini;
-	int nombre_etape;
-	float moyenne;
-	float valeur;
-	struct Trajet * droit;
-	struct Trajet * gauche;
-	int hauteur;
-}Trajet;
-
-
-
-
 
 int main(){
-	Trajet* Arbre;
+	
+	Trajet* arbre = NULL;
 	FILE * fichier = fopen("../data.csv", "r");
     	if (fichier == NULL) {
         	perror("Erreur lors de l'ouverture du fichier");
@@ -33,13 +19,15 @@ int main(){
         	fclose(fichier);
         	return 1;    
     	}
-    	
+    		
     	int trajet_id;
     	int etape;
     	float km;
     	char *valeurs[6];
-    	while (fgets(ligne, 500, fichier) != NULL) {
+    	int a,b;
     	
+    	while (fgets(ligne, 500, fichier) != NULL) {
+    		
         	char *token = strtok(ligne, ";");
         	int colonne = 0;
         	
@@ -48,7 +36,7 @@ int main(){
 			token = strtok(NULL, ";");
 			colonne++;
         	}
-        	
+        	 
 		// Stocker les valeurs des colonnes 1, 2 et 5
         	if (colonne >= 5) {
             		trajet_id = atoi(valeurs[0]);
@@ -58,26 +46,30 @@ int main(){
         	
         	Trajet * noeud_trajet = recherche(arbre , trajet_id);
         	
-        	
+		int h1 = 0;  
+		int h2 = 0;    
+		
         	if(noeud_trajet!= NULL){
         		a = noeud_trajet->valeur;
         		modificationNoeud(noeud_trajet, km);
         		b = noeud_trajet->valeur;
         		if (a!=b){
         		
-        			suppressionAVL(arbre,noeud_trajet->valeur, noeud_trajet->hauteur);
-        			
-        			insertionAVL(arbre, noeud_trajet);
+        			arbre = suppressionAVL(arbre, noeud_trajet->valeur, &h1);
+				arbre = insertionAVL(arbre, noeud_trajet, &h2);
         			
         		} 
         			
         	}else{
-        		insertionAVL(arbre,CreationNoeud(km));
+        		
+        		noeud_trajet = creerNoeud(trajet_id,km); // Créer les Noeuds (OK)
+        		arbre = insertionAVL(arbre,noeud_trajet, &h2);
+        		
         	}
         	
     	}
-    	
-	afficherAVL(arbre);
+	afficherTop50(arbre);
+	
     	fclose(fichier); // Fermer le fichier
     	return 0; // Succès
 }
