@@ -94,23 +94,30 @@ traitement(){
 			for (conducteur in conducteurs) {
 				print conducteur";"conducteurs[conducteur]
 			}
-		}'  data.csv | sort -t';' -k2,2nr | head -n 10 > temp/d2.txt
+		}'  data.csv | sort -t';' -k2,2nr | head -n 10 > temp/d1.txt
   		gnuplot -persist <<- EOF 
-		set terminal pngcairo enhanced font "arial,12" size 800,600
-		set output 'images/d1.png'
-		set title 'TITRE'
-		set style data histograms
-		set style histogram rowstacked
-		set style fill solid border -1
-		set xlabel 'Nombres de route'
-		set ylabel 'Noms des conducteurs'
-		set ytics rotate by -45
-		set xtics nomirror
-    		set ytics nomirror
-    		set border 3
-    		set boxwidth 0.5 relative
-    		set datafile separator ";"
-    		plot 'temp/d2.txt' using 2:xtic(1) title ''
+		set terminal png size 800,600 enhanced font "arial,10"
+set output 'horizontal_histogram.png'
+
+set style fill solid 1.0
+set boxwidth 0.5
+
+# Définir les étiquettes de l'axe des y pour être les noms
+set ytics nomirror rotate by -90
+set format y ""
+
+set xlabel "Valeurs"
+set ylabel "Noms"
+
+# Pour que les étiquettes de l'axe des Y apparaissent à gauche de chaque barre
+set datafile separator ";"
+set yrange [-1:*] reverse
+unset key
+
+	plot 'temp/d2.txt' using 2:xtic(1) with boxes lc rgb "blue" notitle
+
+
+
 		EOF
   
 		end=$(date +%s)
@@ -158,7 +165,40 @@ traitement(){
 		end=$(date +%s)	
 		echo "Temps d'exécution : $((end-start)) secondes"
 		return 1;;
-	'-t') ;;
+	'-t') 
+		start=$(date +%s)
+		
+		
+
+		
+		gnuplot -persist <<- EOF
+		set terminal png size 800,500 enhanced font "arial,12"
+		set output 'images/Traitement -T.png'
+		
+		red = "#FF0000"; blue = "#0000FF"; 
+ 		set yrange [0:4000]
+		set style data histogram
+ 		set style histogram cluster gap 1
+ 		set style fill solid
+ 		set boxwidth 0.9
+		set xtics format ""
+		set bmargin 10
+		set ylabel "NB ROUTES"
+		set xlabel "TOWN NAMES"
+		set xtics rotate by -90
+		set grid ytics
+		set datafile separator ";"
+
+		set title "Option -t Nb routes = f(Towns)"
+		plot "data_t.dat" using 2:xtic(1) title "Total routes" linecolor rgb red,   \
+     		"data_t.dat" using 3 title "First town" linecolor rgb blue
+		EOF
+		
+		
+		
+		end=$(date +%s)	
+		echo "Temps d'exécution : $((end-start)) secondes"
+		return 1;;
 	'-s') ;;
 	*) return 0;;
 	esac
@@ -180,26 +220,6 @@ for par in $*;do
 	#fonction traitement 
 	traitement "$par"
 done
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
