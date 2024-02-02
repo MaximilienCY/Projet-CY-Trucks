@@ -437,8 +437,8 @@ traitement(){
 		set terminal png size 1600,1000 enhanced font "arial,12"
 		set output 'images/Traitement -S.png'
 		
-		set title "Distances des trajets (min, moyenne, max) pour les 50 premières valeurs"
-		set xlabel "Identifiants des trajets"
+		set title "Distances des trajets (min, moyenne, max) des 50 premières valeurs"
+		set xlabel "Id des trajets"
 		set ylabel "Distances (km)"
 		
 		set xtics autofreq nomirror rotate by 60 right
@@ -447,10 +447,13 @@ traitement(){
 		
 		set datafile separator ';'
 		
-		plot 'temp/traitement-s.txt' using (2*\$0+1):2:4 with filledcurves lc rgb "#CEA3FF" fs transparent solid 0.5 title 'Min/Max', \
+		plot 'temp/traitement-s.txt' using (2*\$0+1):2:4 with filledcurves lc rgb "#6984a3" fs transparent solid 0.5 title 'Min/Max', \
     		'' using (2*\$0+1):3:xticlabel(1) with lines lt -1 lw 2 title 'Moyenne'
 		
 		EOF
+		
+	
+		
 		end=$(date +%s)	
 		echo "Temps d'exécution : $((end-start)) secondes"
 		return 1;;
