@@ -225,7 +225,61 @@ traitement(){
 		end=$(date +%s)	
 		echo "Temps d'exécution : $((end-start)) secondes"
 		return 1;;
-	'-s') ;;
+	'-s') 
+		start=$(date +%s)
+		
+		# Définir le nom de l'exécutable
+		EXEC_NAME="traitement_s"
+		
+		# Définir le chemin vers le sous-répertoire contenant l'exécutable
+		BUILD_DIR="progc"
+		cd "$BUILD_DIR"
+		
+		
+		# Vérifier si l'exécutable existe
+		if [ -f "EXEC_NAME" ]; then
+    			echo "L'exécutable existe déjà. Exécution..."
+    			
+    			./"EXEC_NAME"
+		else
+    			echo "L'exécutable n'existe pas. Compilation..."
+    			
+		    	# Exécuter la commande make pour compiler le programme
+		    	make CY_Truck_s
+		    	# Vérifier si la compilation a réussi
+		    	if [ -f "$EXEC_NAME" ]; then
+				echo "Compilation réussie. Exécution..."
+				
+				./"$EXEC_NAME"
+		    	else
+				echo "La compilation a échoué."
+				exit 1
+		    	fi	
+		fi
+		cd ..
+		gnuplot -persist <<- EOF
+		
+		set terminal png size 1600,1000 enhanced font "arial,12"
+		set output 'images/Traitement -S.png'
+		
+		set title "Distances des trajets (min, moyenne, max) pour les 50 premières valeurs"
+		set xlabel "Identifiants des trajets"
+		set ylabel "Distances (km)"
+		
+		set xtics autofreq nomirror rotate by 60 right
+		
+		set style line 100 lc rgb "black" lw 0.5
+		
+		set datafile separator ';'
+		
+		plot 'temp/traitement-s.txt' using (2*\$0+1):2:4 with filledcurves lc rgb "#CEA3FF" fs transparent solid 0.5 title 'Min/Max', \
+    		'' using (2*\$0+1):3:xticlabel(1) with lines lt -1 lw 2 title 'Moyenne'
+		
+		EOF
+		end=$(date +%s)	
+		echo "Temps d'exécution : $((end-start)) secondes"
+		return 1;;
+	
 	*) return 0;;
 	esac
 }
@@ -246,6 +300,3 @@ for par in $*;do
 	#fonction traitement 
 	traitement "$par"
 done
-
-
-
