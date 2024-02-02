@@ -35,11 +35,14 @@ Il est nécessaire de téléchargé le fichier `data.csv` disponible sur le Team
 Le compilateur doit être télécharger sur votre ordinateur.
 Le programme compile les programmes C à partir d'un fichier Makefile situé dans le sous-répertoire `progc/`. 
 ## Execution
-Téléchargement terminé, vous pouvez lancer le scipt shell avec l'argument -h pour trouver l'interface d'information : `./main.sh -h`
+Téléchargement terminé, vous pouvez lancer le scipt shell avec l'argument -h pour trouver l'interface d'information : `./main.sh -h` .
 Il est possible que vous rencontrez des erreurs de droits, executez dans votre terminal : 
 `chmod 755 main.sh`
 ## Répartition
 Voir PDF
+
+
+
 
 
 
