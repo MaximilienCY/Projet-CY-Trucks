@@ -94,7 +94,7 @@ Trajet * modificationNoeud(Trajet* trajet, float km){
 	if(km > trajet->distance_maxi){
 		trajet->distance_maxi = km;
 	}
-	else if(km < trajet->distance_maxi){
+	else if(km < trajet->distance_mini){
 		trajet->distance_mini = km;
 	}
 	trajet->valeur = (trajet->distance_maxi) - (trajet->distance_mini);
