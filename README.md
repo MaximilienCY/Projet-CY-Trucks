@@ -21,7 +21,7 @@ Il est nécessaire de téléchargé le fichier `data.csv` disponible sur le Team
 - `main.sh`
 - `data.csv`
 - `/progc`
-    - `/exe` 
+    - `exe/` 
     - `/headers`
          - `avl.h`
          - 
