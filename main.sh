@@ -234,18 +234,18 @@ traitement(){
 		# Définir le chemin vers le sous-répertoire contenant l'exécutable
 		BUILD_DIR="progc"
 		cd "$BUILD_DIR"
-		
+		cd exe
 		
 		# Vérifier si l'exécutable existe
-		if [ -f "EXEC_NAME" ]; then
+		if [ -f "$EXEC_NAME" ]; then
     			echo "L'exécutable existe déjà. Exécution..."
-    			
-    			./"EXEC_NAME"
+    			./"$EXEC_NAME"
 		else
     			echo "L'exécutable n'existe pas. Compilation..."
-    			
+    			cd ..
 		    	# Exécuter la commande make pour compiler le programme
 		    	make CY_Truck_s
+		    	cd exe
 		    	# Vérifier si la compilation a réussi
 		    	if [ -f "$EXEC_NAME" ]; then
 				echo "Compilation réussie. Exécution..."
@@ -256,6 +256,7 @@ traitement(){
 				exit 1
 		    	fi	
 		fi
+		cd ..
 		cd ..
 		gnuplot -persist <<- EOF
 		
@@ -294,8 +295,6 @@ for par in $*;do
 		echo "ERREUR : un des paramètres n'existe pas"
 		exit 1
 	fi
-	#verification executable C
-	executable="./m"
 	
 	#fonction traitement 
 	traitement "$par"
