@@ -15,9 +15,11 @@ Projet informatique FILIERE préING2 • 2023-2024
 Le projet CY Truck est un script conçu pour analyser de vastes ensembles de données logistiques liées au transport pour une entreprise de transport routier. Ce script est développé en utilisant les langages Shell et C, à partir de fichiers CSV.
 ## Fichiers 
 `-data`
-## Compilation
-
 ## Prérequis
+Installation des bibliothèques nécessaires sous linux : 
+`sudo apt-get install gnuplot imagemagick`
+Il est nécessaire de téléchargé le fichier `data.csv`
+## Compilation
 
 ## Execution
 
