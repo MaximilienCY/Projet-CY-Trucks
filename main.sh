@@ -176,7 +176,7 @@ traitement(){
     		
 
     		# Tracer les données à partir du fichier spécifié en utilisant la deuxième colonne pour les valeurs 		de l'axe des y en spécifiant la couleur des barres 
-    		plot 'temp/d1.txt' using 2:xtic(1) notitle linecolor rgb blue 
+    		plot 'temp/d1temp.txt' using 2:xtic(1) notitle linecolor rgb blue 
 		EOF
 
 		# Faire pivoter l'image générée au format paysage en utilisant la commande convert d'ImageMagick
@@ -287,8 +287,8 @@ traitement(){
 		} 
 		END { 
     			for (conducteur in distances) printf "%s %.3f\n", conducteur, distances[conducteur] 
-		}' data.csv > temp/l_temp.txt
-		LC_NUMERIC=C sort -t ' ' -k2,2nr temp/l_temp.txt | head -n 10 | sort -n -t ' ' -k1 > temp/l_temp.txt
+		}' data.csv > temp/l_temp.csv
+		LC_NUMERIC=C sort -t ' ' -k2,2nr temp/l_temp.csv | head -n 10 | sort -n -t ' ' -k1 > temp/ltemp.txt
 
 ################################# [Création du graphique avec GNUPLOT] #####################################	
 		
@@ -380,7 +380,7 @@ traitement(){
 		set bmargin 10
 		set grid ytics
 		
-		# Spécifie le séparateur de fichier de données comme un espace
+		# Spécifie le séparateur de fichier de données comme un point virgule
 		set datafile separator ";"
 
 		plot "temp/data_t.dat" using 2:xtic(1) title "Total routes" linecolor rgb bluedark,   \
