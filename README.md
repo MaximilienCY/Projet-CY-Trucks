@@ -6,7 +6,7 @@ Projet informatique FILIERE préING2 • 2023-2024
   - FRANCOIS Timothée MI4
 ## Sommaire
   
-## Contenu
+## Description
 
 ## Fichiers 
 
