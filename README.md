@@ -1,20 +1,20 @@
 # Projet-CY-Trucks
 Projet informatique FILIERE préING2 • 2023-2024
 
-##Groupe 
+## Groupe 
 
-##Sommaire
+## Sommaire
 
-##Contenu
+## Contenu
 
-##Fichiers 
+## Fichiers 
 
-##Compilation
+## Compilation
 
-##Prérequis
+## Prérequis
 
-##Execution
+## Execution
 
-##Répartition
+## Répartition
 
 
