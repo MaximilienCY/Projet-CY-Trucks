@@ -216,10 +216,19 @@ void parcourirEtCollecterTop50(Trajet* racine, Trajet* topTrajets[TOP_N], int* n
 
 
 void afficherTop50(Trajet* topTrajets[TOP_N], int nombreTrajets) {
-    	printf("Top 50 des trajets par valeur :\n");
-    	for (int i = 0; i < nombreTrajets && i < TOP_N; i++) {
-        	printf("Trajet ID: %d, Valeur: %f,Min: %f,Max: %f,Moyenne: %f\n", topTrajets[i]->trajet, topTrajets[i]->valeur,topTrajets[i]->distance_mini,topTrajets[i]->distance_maxi,topTrajets[i]->moyenne);
+    	FILE *file = fopen("../temp/traitement-s.txt", "w"); // Open the file for writing
+    	if (file == NULL) {
+        	printf("Error opening file!\n");
+        	return;
     	}
+
+    	for (int i = 0; i < nombreTrajets && i < TOP_N; i++) {
+        	fprintf(file, "%d;%f;%f;%f;%f\n",
+                	topTrajets[i]->trajet, topTrajets[i]->distance_mini, topTrajets[i]->moyenne,
+                	topTrajets[i]->distance_maxi, topTrajets[i]->valeur);
+    	}
+
+    	fclose(file); // Close the file
 }
 
 
