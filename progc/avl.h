@@ -1,7 +1,7 @@
 
 #ifndef AVL_H
 #define AVL_H
-
+#define TOP_N 50
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -33,23 +33,19 @@ Trajet* doubleRotationDroite(Trajet* a);
 
 Trajet* equilibrerAVL(Trajet* a);
 
-void modificationNoeud(Trajet* trajet, int km);
+Trajet* modificationNoeud(Trajet* trajet, float km);
 
 void afficherAVL(Trajet* root);
 
-Trajet* suppressionAVL(Trajet* a, float e, int* h);
-
-Trajet* suppMinAVL(Trajet* a, int* h, float* pe);
-
-Trajet* insertionAVL(Trajet* a, Trajet* noeud, int* h);
-
-Trajet* recherche(Trajet* a, int e);
+Trajet* insertionAVL(Trajet* a, Trajet* noeud,float km, int* h);
 
 Trajet* creerNoeud(int trajet_id,float kilometrage);
 
-void parcoursOrdreInverseLimite(Trajet* racine, int* compteur);
+void afficherTop50(Trajet* topTrajets[TOP_N], int nombreTrajets);
 
-void afficherTop50(Trajet* racine);
+void parcourirEtCollecterTop50(Trajet* racine, Trajet* topTrajets[TOP_N], int* nombreTrajets);
+
+void insererDansTop50(Trajet* topTrajets[TOP_N], Trajet* nouveauTrajet, int* nombreTrajets);
 
 int max(int a, int b);
 
