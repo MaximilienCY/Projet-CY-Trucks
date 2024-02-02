@@ -20,12 +20,12 @@ Il est nécessaire de téléchargé le fichier `data.csv` disponible sur le Team
 ## Fichiers 
 - `main.sh`
 - `data.csv`
-- `progc`
-    - `exe` 
-    - `headers`
+- `/progc`
+    - `/exe` 
+    - `/headers`
          - `avl.h`
          - 
-    - `programme C`
+    - `/programme C`
         - `traitement-s.c`
         - `fonctionAVL.c`
         -
