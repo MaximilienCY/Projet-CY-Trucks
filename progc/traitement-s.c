@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "avl.h"
+#define TOP_N 50
 
 int main(){
 	
@@ -24,7 +25,6 @@ int main(){
     	int etape;
     	float km;
     	char *valeurs[6];
-    	int a,b;
     	
     	while (fgets(ligne, 500, fichier) != NULL) {
     		
@@ -44,32 +44,22 @@ int main(){
             		km = atof(valeurs[4]);
         	}
         	
-        	Trajet * noeud_trajet = recherche(arbre , trajet_id);
-        	
-		int h1 = 0;  
-		int h2 = 0;    
-		
-        	if(noeud_trajet!= NULL){
-        		a = noeud_trajet->valeur;
-        		modificationNoeud(noeud_trajet, km);
-        		b = noeud_trajet->valeur;
-        		if (a!=b){
-        		
-        			arbre = suppressionAVL(arbre, noeud_trajet->valeur, &h1);
-				arbre = insertionAVL(arbre, noeud_trajet, &h2);
-        			
-        		} 
-        			
-        	}else{
-        		
-        		noeud_trajet = creerNoeud(trajet_id,km); // Créer les Noeuds (OK)
-        		arbre = insertionAVL(arbre,noeud_trajet, &h2);
-        		
-        	}
+        	int h = 0;
+        	Trajet * NouveauTrajet = creerNoeud(trajet_id,km);
+        	arbre = insertionAVL(arbre, NouveauTrajet,km , &h);
         	
     	}
-	afficherTop50(arbre);
-	
+    	
+	// Initialisation du tableau pour stocker les 50 plus grandes valeurs et du compteur
+    	Trajet* topTrajets[TOP_N] = {0};
+    	int nombreTrajets = 0;
+
+    	// Parcourir l'arbre et collecter les 50 plus grandes valeurs
+    	parcourirEtCollecterTop50(arbre, topTrajets, &nombreTrajets);
+
+    	// Afficher les 50 plus grandes valeurs
+    	afficherTop50(topTrajets, nombreTrajets);
+    	
     	fclose(fichier); // Fermer le fichier
     	return 0; // Succès
 }
