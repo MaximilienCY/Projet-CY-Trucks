@@ -95,44 +95,70 @@ traitement(){
 				print conducteur";"conducteurs[conducteur]
 			}
 		}'  data.csv | sort -t';' -k2,2nr | head -n 10 > temp/d1.txt
-  		gnuplot -persist <<- EOF 
-		set terminal png size 800,600 enhanced font "arial,10"
-set output 'horizontal_histogram.png'
+  		gnuplot <<-EOF
+   		set terminal png size 600,1500
+   		set output 'images/Traitement(d1).png'
+   		set datafile separator ";"
+   		set label "Option -d1: Nb of routes = f(Driver)" at -1.5,95 rotate by 90
+   		set ylabel "Number of Routes" offset 64
+   		set xlabel "Driver Names" rotate by 180
+   		set style data histograms
+   		set style fill solid border -1
+   		set yrange [0:250]
+   		set boxwidth 0.8
+   		set xtic rotate 90
+   		set ytic rotate 90 offset 61
+   		set ytic 50
 
-set style fill solid 1.0
-set boxwidth 0.5
-
-# Définir les étiquettes de l'axe des y pour être les noms
-set ytics nomirror rotate by -90
-set format y ""
-
-set xlabel "Valeurs"
-set ylabel "Noms"
-
-# Pour que les étiquettes de l'axe des Y apparaissent à gauche de chaque barre
-set datafile separator ";"
-set yrange [-1:*] reverse
-unset key
-
-	plot 'temp/d2.txt' using 2:xtic(1) with boxes lc rgb "blue" notitle
-
-
-
+   		plot 'temp/d1.txt' using 2:xtic(1) notitle
+   
 		EOF
-  
+	
+		convert -rotate 90 images/histogram_d1.png images/histogram_d1.png
+
+
 		end=$(date +%s)
 		echo "Temps d'exécution : $((end-start)) secondes"
 		return 1;;
 	'-d2') 
 		start=$(date +%s)
 
-		LC_NUMERIC=C awk -F';' 'BEGIN { OFS=";" } { gsub(",", "", $5); distances[$6] += $5 
+		awk -F';' '
+		{ 
+			trajet = $6
+			distances[trajet] += $5
 		} 
 		END { 
-    		for (conducteur in distances) printf "%s %.3f\n", conducteur, distances[conducteur] 
-		}' data.csv > temp/d2temp.csv
+			for (conducteur in distances) {
+				printf "%s;%.3f\n", conducteur, distances[conducteur]
+			}
+		}' data.csv | sort -t';' -k2,2nr | head -n 10 > temp/d2temp.txt
 
-		LC_NUMERIC=C sort -t ' ' -k3,3nr temp/d2temp.csv | head -n 10 > d2.csv
+	
+		
+		gnuplot <<-EOF
+   		set terminal png size 600,1500
+   		set output 'images/Traitement(d2).png'
+   		set datafile separator ";"
+   		set label "Option -d2 : Distance = f(Driver)" at -1.5,95 rotate by 90
+   		set ylabel "DISTANCE (Km)" offset 64
+   		set xlabel "Driver Names" rotate by 180
+   		set style data histograms
+   		set style fill solid border -1
+   		set yrange [0:160000]
+   		set boxwidth 0.8
+   		set xtic rotate 90
+   		set ytic rotate 90 offset 61
+   		set ytic 20000
+
+   		plot 'temp/d2temp.txt' using 2:xtic(1) notitle
+   
+		EOF
+	
+		convert -rotate 90 images/histogram_d2.png images/histogram_d2.png
+		
+		
+		
 		end=$(date +%s)
 		echo "Temps d'exécution : $((end-start)) secondes"
 		return 1;;
@@ -146,17 +172,17 @@ unset key
 		}' data.csv > temp/ltemp.csv 
 		LC_NUMERIC=C sort -t ' ' -k2,2nr temp/ltemp.csv | head -n 10 | sort -n -t ' ' -k1 > l.csv
 
-		output_folder="images"  # Spécifiez le dossier de sortie
-		output_file="${output_folder}/Traitement -l.png"
+	
 		
 		gnuplot -persist <<- EOF
 		set terminal pngcairo enhanced font "arial,12" size 800,600
-		set output '$output_file'
-		set title 'Les 10 trajets les plus longs'
+		set output 'images/Traitement(-l).png'
+		set title 'Option -l : Distance = f(Route)'
 		set style data histograms
 		set style fill solid border -1
-		set ylabel 'Distance (km)'
-		set xlabel 'Identifiant du trajet'
+		set ylabel 'DISTANCE (Km)'
+		set xlabel 'ROUTE ID'
+		set yrange [0:3000]
 		set xtics rotate by -45
 		set datafile separator " "
 		plot 'l.csv' using 2:xtic(1) title ''
