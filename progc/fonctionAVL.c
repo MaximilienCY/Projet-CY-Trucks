@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "avl.h"
+#define TOP_N 50
 
 
 
@@ -88,17 +89,19 @@ Trajet* equilibrerAVL(Trajet *a) {
 
 
 
-void modificationNoeud(Trajet* trajet, int km){
+Trajet * modificationNoeud(Trajet* trajet, float km){
+	
 	if(km > trajet->distance_maxi){
 		trajet->distance_maxi = km;
 	}
-	if(km < trajet->distance_mini){
+	else if(km < trajet->distance_maxi){
 		trajet->distance_mini = km;
 	}
-	trajet->valeur = (trajet->distance_maxi - trajet->distance_mini);
+	trajet->valeur = (trajet->distance_maxi) - (trajet->distance_mini);
 	trajet->moyenne = ((trajet->moyenne)*(trajet->nombre_etape) + km) / (trajet->nombre_etape + 1);
 	trajet->nombre_etape+=1;
 	
+	return trajet;
 }
 
 void afficherAVL(Trajet* root) {
@@ -111,118 +114,31 @@ void afficherAVL(Trajet* root) {
 
 
 
-//FONCTION SuppressionAVL
-Trajet* suppressionAVL(Trajet* a, float e, int* h) {
-    	Trajet* tmp;
-    	if (a == NULL) {
-        	*h = 1;
-        	return a;
-    	}
-    	if (e > a->valeur) {
-    		
-        	a->droit = suppressionAVL(a->droit, e, h);
-    	} else if (e < a->valeur) {
-    		
-        	a->gauche = suppressionAVL(a->gauche, e, h);
-        	*h = -*h;
-    	} else {
-    		
-        	if (a->droit != NULL) {
-            		a->droit = suppMinAVL(a->droit, h, &(a->valeur));
-        	} else {
-        		
-            		tmp = a;
-            		a = a->gauche;
-            		free(tmp);
-            		*h = -1;
-      
-        	}
-    	}
-	
-    	if (*h != 0 && a != NULL) {
-    		
-        	a->hauteur = 1 + max(height(a->gauche), height(a->droit));
-        	
-        	a = equilibrerAVL(a);
-        	*h = (getBalance(a) == 0) ? 0 : 1;
-    	}
-    	
-    	return a;
-}
 
-//FONCTION suppMinAVL
-Trajet* suppMinAVL(Trajet* a, int* h, float* pe) {
-    	Trajet* tmp;
-    	if (a->gauche == NULL) {
-    		
-        	*pe = a->valeur;
-        	*h = -1;
-        	tmp = a;
-        	a = a->droit;
-        	free(tmp);
-        	return a;
-    	} else {
-        	a->gauche = suppMinAVL(a->gauche, h, pe);
-        	*h = -*h;
-    	}
-
-    	if (*h != 0) {
-    		
-        	a->hauteur = 1 + max(height(a->gauche), height(a->droit));
-        	a = equilibrerAVL(a);
-        	*h = (getBalance(a) == 0) ? -1 : 0;
-    	}
-    	return a;
-}
-
-
-Trajet* insertionAVL(Trajet* a, Trajet* noeud, int* h) {
+Trajet* insertionAVL(Trajet* a, Trajet* noeud, float km, int* h) {
     	if (a == NULL) {	
+    		
       	   	*h = 1; // Arbre a grandi en hauteur
         	return noeud;
     	}
 	
-    	if (noeud->valeur < a->valeur) {
-    		printf("b"); 		
-        	a->gauche = insertionAVL(a->gauche, noeud, h);
-    	} else if (noeud->valeur > a->valeur) {
-    		printf("a"); 	
-        	a->droit = insertionAVL(a->droit, noeud, h);
-    	} else {
-    		printf("c"); 
-        	*h = 0; // Valeur déjà présente, pas d'insertion
-        	return a;
-    	}
-
+    	if (noeud->trajet < a->trajet) {	
+        	a->gauche = insertionAVL(a->gauche, noeud,km, h);
+        	
+    	} else if (noeud->trajet > a->trajet) {
+        	a->droit = insertionAVL(a->droit, noeud,km, h);
+        	
+    	} else if (noeud->trajet == a->trajet) { 		
+    		a = modificationNoeud(a, km);
+    	}	
     	a->hauteur = 1 + max(height(a->gauche), height(a->droit));
 
     	if (*h != 0) {
         	a = equilibrerAVL(a);
         	*h = (getBalance(a) == 0) ? 0 : 1;
     	}
+    	
     	return a;
-}
-
-//FONCTION RECHERCHE
-Trajet* recherche(Trajet* a, int e) {
-
-    	if (a == NULL) {
-    		
-     	   	return NULL; // Cas de base : nœud est NULL
-    	}
-
-    	if (a->trajet == e) {
-    	    	return a; // Nœud trouvé
-    	}
-
-    	// D'abord, recherche dans le sous-arbre gauche
-    	Trajet* resultGauche = recherche(a->gauche, e);
-    	if (resultGauche != NULL) {
-    	    	return resultGauche; // Nœud trouvé dans le sous-arbre gauche
-   	 }
-
-    	// Ensuite, recherche dans le sous-arbre droit
-    	return recherche(a->droit, e);
 }
 
 
@@ -265,29 +181,47 @@ int min(int a, int b) {
 
 
 
-void parcoursOrdreInverseLimite(Trajet* racine, int* compteur) {
-    	if (racine == NULL || *compteur >= 50) {	
-        	return; // Arrêter si l'arbre est vide ou si 50 nœuds ont été visités
+void insererDansTop50(Trajet* topTrajets[TOP_N], Trajet* nouveauTrajet, int* nombreTrajets) {
+    	if (*nombreTrajets < TOP_N) {
+        	topTrajets[(*nombreTrajets)++] = nouveauTrajet;
+    	} else {
+        	if (nouveauTrajet->valeur <= topTrajets[TOP_N - 1]->valeur) {
+            		return; // La nouvelle valeur n'est pas assez grande pour entrer dans le top 50
+        	}
+        	topTrajets[TOP_N - 1] = nouveauTrajet; // Remplacer le dernier élément
+    }
+
+    	// Tri naïf pour maintenir les plus grandes valeurs (cette partie peut être optimisée)
+    	for (int i = 0; i < *nombreTrajets - 1; i++) {
+        	for (int j = i + 1; j < *nombreTrajets; j++) {
+            		if (topTrajets[i]->valeur < topTrajets[j]->valeur) {
+                		Trajet* temp = topTrajets[i];
+                		topTrajets[i] = topTrajets[j];
+                		topTrajets[j] = temp;
+            		}
+        	}
     	}
-
-    	// Parcourir d'abord le sous-arbre droit
-    	parcoursOrdreInverseLimite(racine->droit, compteur);
-
-    	if (*compteur < 50) {
-
-        	// Afficher la valeur du nœud actuel
-        	printf("%d ", racine->trajet); // ou toute autre valeur que vous voulez afficher
-        	(*compteur)++; // Incrémenter le compteur
-    	}
-
-    	// Parcourir ensuite le sous-arbre gauche
-    	parcoursOrdreInverseLimite(racine->gauche, compteur);
 }
 
-// Fonction pour initier le parcours
-void afficherTop50(Trajet* racine) {
-    	int compteur = 0;
-    	parcoursOrdreInverseLimite(racine, &compteur);
+void parcourirEtCollecterTop50(Trajet* racine, Trajet* topTrajets[TOP_N], int* nombreTrajets) {
+    	if (racine == NULL) {
+        	return;
+    	}
+
+    	// Parcourir l'arbre de manière récursive
+    	parcourirEtCollecterTop50(racine->gauche, topTrajets, nombreTrajets);
+    	insererDansTop50(topTrajets, racine, nombreTrajets);
+    	parcourirEtCollecterTop50(racine->droit, topTrajets, nombreTrajets);
 }
+
+
+void afficherTop50(Trajet* topTrajets[TOP_N], int nombreTrajets) {
+    	printf("Top 50 des trajets par valeur :\n");
+    	for (int i = 0; i < nombreTrajets && i < TOP_N; i++) {
+        	printf("Trajet ID: %d, Valeur: %f,Min: %f,Max: %f,Moyenne: %f\n", topTrajets[i]->trajet, topTrajets[i]->valeur,topTrajets[i]->distance_mini,topTrajets[i]->distance_maxi,topTrajets[i]->moyenne);
+    	}
+}
+
+
 
 
