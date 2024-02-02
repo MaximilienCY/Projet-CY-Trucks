@@ -43,6 +43,9 @@ Voir PDF
 
 
 
+![plot](logo_cy.png)
+
+
 
 
 
